@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #FFFBF9, #FFE6F1);
+            color: #333;
+        }
+
+        .stopwatch-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #timeDisplay {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .controls button {
+            padding: 12px 30px;
+            font-size: 16px;
+            margin: 10px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #startBtn {
+            background: linear-gradient(45deg, #34eb83, #28a745);
+            color: white;
+        }
+
+        #stopBtn {
+            background: linear-gradient(45deg, #f9c74f, #f39c12);
+            color: white;
+        }
+
+        #resetBtn {
+            background: linear-gradient(45deg, #e63946, #d90429);
+            color: white;
+        }
+
+        .controls button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch-container">
+        <h1>⏱ Stopwatch</h1>
+        <div id="timeDisplay">00:00:00</div>
+        <div class="controls">
+            <button id="startBtn" onclick="startTimer()">Start</button>
+            <button id="stopBtn" onclick="stopTimer()" disabled>Stop</button>
+            <button id="resetBtn" onclick="resetTimer()" disabled>Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let startTime, updatedTime, difference, tInterval;
+        let running = false;
+
+        function startTimer() {
+            if (!running) {
+                startTime = new Date().getTime() - (difference || 0);
+                tInterval = setInterval(getTime, 1);
+                running = true;
+                document.getElementById("startBtn").disabled = true;
+                document.getElementById("stopBtn").disabled = false;
+                document.getElementById("resetBtn").disabled = false;
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(tInterval);
+            running = false;
+            document.getElementById("startBtn").disabled = false;
+            document.getElementById("stopBtn").disabled = true;
+        }
+
+        function resetTimer() {
+            clearInterval(tInterval);
+            running = false;
+            difference = 0;
+            document.getElementById("timeDisplay").textContent = "00:00:00";
+            document.getElementById("startBtn").disabled = false;
+            document.getElementById("stopBtn").disabled = true;
+            document.getElementById("resetBtn").disabled = true;
+        }
+
+        function getTime() {
+            updatedTime = new Date().getTime();
+            difference = updatedTime - startTime;
+
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            const milliseconds = Math.floor((difference % 1000));
+
+            document.getElementById("timeDisplay").textContent =
+                formatTime(minutes) + ":" + formatTime(seconds) + ":" + formatTime(milliseconds);
+        }
+
+        function formatTime(time) {
+            if (time < 10) {
+                return "0" + time;
+            } else {
+                return time;
+            }
+        }
+    </script>
+</body>
+</html>
